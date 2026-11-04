@@ -2,7 +2,7 @@ package io.github.defective4.jbabel;
 
 import java.math.BigInteger;
 
-public record Book(BabelLib library, BigInteger value) {
+public record Book(BabelLibrary library, BigInteger value) {
 
     @Override
     public String toString() {

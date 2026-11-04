@@ -5,7 +5,7 @@ import java.util.Random;
 
 import io.github.defective4.jbabel.math.BigIntegerMath;
 
-public class BabelLib {
+public class BabelLibrary {
     public static class Builder {
         private int booksPerShelf = 32;
         private final char[] chars;
@@ -29,8 +29,8 @@ public class BabelLib {
             this.pagesPerBook = pagesPerBook;
         }
 
-        public BabelLib create() {
-            return new BabelLib(this.max, this.coprime, this.inverseMod, this.chars, this.wallsPerRoom,
+        public BabelLibrary create() {
+            return new BabelLibrary(this.max, this.coprime, this.inverseMod, this.chars, this.wallsPerRoom,
                     this.shelvesPerWall, this.booksPerShelf, this.pagesPerBook);
         }
 
@@ -61,7 +61,7 @@ public class BabelLib {
 
     private final int wallsPerRoom, shelvesPerWall, booksPerShelf, pagesPerBook;
 
-    private BabelLib(BigInteger max, BigInteger coprime, BigInteger inverseMod, char[] chars, int wallsPerRoom,
+    private BabelLibrary(BigInteger max, BigInteger coprime, BigInteger inverseMod, char[] chars, int wallsPerRoom,
             int shelvesPerWall, int booksPerShelf, int pagesPerBook) {
         if (max.toString(chars.length).length() % pagesPerBook != 0)
             throw new IllegalArgumentException("bookCharacters % pagesPerBook != 0");
