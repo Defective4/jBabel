@@ -7,24 +7,6 @@ public class BigIntegerMath {
     private BigIntegerMath() {
     }
 
-    static BigInteger gcdExtended(BigInteger a, BigInteger b, BigInteger[] x, BigInteger[] y) {
-        if (a.equals(BigInteger.ZERO)) {
-            x[0] = BigInteger.ZERO;
-            y[0] = BigInteger.ONE;
-            return b;
-        }
-
-        BigInteger[] x1 = new BigInteger[1];
-        BigInteger[] y1 = new BigInteger[1];
-        BigInteger gcd = gcdExtended(b.mod(a), a, x1, y1);
-
-        BigInteger div = b.divide(a).multiply(x1[0]);
-        x[0] = y1[0].subtract(div);
-        y[0] = x1[0];
-
-        return gcd;
-    }
-
     public static BigInteger generateLargestBase(int base, int length) {
         return new BigInteger(Integer.toString(base - 1, base).repeat(length), base);
     }
@@ -44,12 +26,33 @@ public class BigIntegerMath {
     }
 
     public static BigInteger modularInverse(BigInteger n, BigInteger m) {
-        BigInteger[] x = new BigInteger[1];
-        BigInteger[] y = new BigInteger[1];
+        if (!n.gcd(m).equals(BigInteger.ONE)) return BigInteger.valueOf(-1);
 
-        BigInteger g = gcdExtended(n, m, x, y);
-        if (!g.equals(BigInteger.ONE)) return BigInteger.valueOf(-1);
-        BigInteger res = x[0].mod(m).add(m).mod(m);
-        return res;
+        BigInteger m0 = m;
+        BigInteger y = BigInteger.ZERO, x = BigInteger.ONE;
+
+        if (m.equals(BigInteger.ONE)) return BigInteger.ZERO;
+
+        while (n.compareTo(BigInteger.ONE) > 0) {
+            BigInteger q = n.divide(m);
+
+            BigInteger t = m;
+
+            m = n.mod(m);
+            n = t;
+            t = y;
+
+            BigInteger mult = q.multiply(y);
+            y = x.subtract(mult);
+            x = t;
+        }
+
+        // Make x positive
+        if (x.compareTo(BigInteger.ZERO) < 0) {
+            x = x.add(m0);
+        }
+
+        return x;
     }
+
 }
