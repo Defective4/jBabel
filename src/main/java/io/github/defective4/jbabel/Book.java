@@ -6,6 +6,10 @@ public record Book(BabelLibrary library, BigInteger value) {
 
     @Override
     public String toString() {
+        return "Book [value=" + this.value.toString(this.library.getBase()) + "]";
+    }
+
+    public String toBaseString() {
         return this.value.toString(this.library.getChars().length);
     }
 
@@ -41,7 +45,7 @@ public record Book(BabelLibrary library, BigInteger value) {
     }
 
     public String getContent() {
-        String base = this.toString();
+        String base = this.toBaseString();
         StringBuilder contentBuilder = new StringBuilder(base.length());
         char[] chars = this.library.getChars();
         int radix = chars.length;
