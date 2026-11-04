@@ -60,11 +60,13 @@ public class BabelLibrary {
     private final BigInteger max, coprime, inverseMod;
 
     private final int wallsPerRoom, shelvesPerWall, booksPerShelf, pagesPerBook;
+    private final int charactersPerPage;
 
     private BabelLibrary(BigInteger max, BigInteger coprime, BigInteger inverseMod, char[] chars, int wallsPerRoom,
             int shelvesPerWall, int booksPerShelf, int pagesPerBook) {
-        if (max.toString(chars.length).length() % pagesPerBook != 0)
-            throw new IllegalArgumentException("bookCharacters % pagesPerBook != 0");
+        int len = max.toString(chars.length).length();
+        if (len % pagesPerBook != 0) throw new IllegalArgumentException("bookCharacters % pagesPerBook != 0");
+        charactersPerPage = len / pagesPerBook;
         this.max = max;
         this.coprime = coprime;
         this.inverseMod = inverseMod;
@@ -73,6 +75,10 @@ public class BabelLibrary {
         this.shelvesPerWall = shelvesPerWall;
         this.booksPerShelf = booksPerShelf;
         this.pagesPerBook = pagesPerBook;
+    }
+
+    public int getCharactersPerPage() {
+        return charactersPerPage;
     }
 
     public Book findBook(String contents) {

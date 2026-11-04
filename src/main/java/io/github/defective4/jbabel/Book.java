@@ -13,6 +13,12 @@ public record Book(BabelLibrary library, BigInteger value) {
         return this.value.multiply(this.library.getInverseMod()).mod(this.library.getMax());
     }
 
+    public String getPage(int pageIndex) {
+        int start = library.getCharactersPerPage() * pageIndex;
+        int end = start + library.getCharactersPerPage();
+        return getContent().substring(start, end);
+    }
+
     public String getContent() {
         String base = this.toString();
         StringBuilder contentBuilder = new StringBuilder(base.length());
