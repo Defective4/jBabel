@@ -93,9 +93,40 @@ public class BabelCatalogue {
         return newBook;
     }
 
+    public Book getBookAt(BigInteger room, int wall, int shelf, int book) {
+        return library.getBookAt(this.getBookIndex(room, wall, shelf, book));
+    }
+
+    public Book getBookAt(BookLocation location) {
+        return library.getBookAt(this.getBookIndex(location));
+    }
+
+    public BigInteger getBookIndex(BigInteger room, int wall, int shelf, int book) {
+        int wallsPerRoom = library.getWallsPerRoom();
+        int shelvesPerWall = library.getShelvesPerWall();
+        int booksPerShelf = library.getBooksPerShelf();
+        if (wall < 0 || wall >= wallsPerRoom)
+            throw new IllegalArgumentException("wall index is not within range of 0-%s".formatted(wallsPerRoom - 1));
+        if (shelf < 0 || shelf >= shelvesPerWall)
+            throw new IllegalArgumentException("shelf index is not within range of 0-%s".formatted(shelvesPerWall - 1));
+        if (book < 0 || book >= booksPerShelf)
+            throw new IllegalArgumentException("book index is not within range of 0-%s".formatted(booksPerShelf - 1));
+
+        BigInteger index = room.multiply(BigInteger.valueOf(wallsPerRoom)).multiply(BigInteger.valueOf(shelvesPerWall))
+                .multiply(BigInteger.valueOf(booksPerShelf));
+        index = index.add(BigInteger.valueOf(wall * shelvesPerWall * booksPerShelf));
+        index = index.add(BigInteger.valueOf(shelf * booksPerShelf));
+        index = index.add(BigInteger.valueOf(book));
+        return index;
+    }
+
+    public BigInteger getBookIndex(BookLocation location) {
+        return this.getBookIndex(location.room(), location.wall(), location.shelf(), location.book());
+    }
+
     public Book getRandomBook() {
         BigInteger index = new BigInteger(randomBookBits, random);
-        return library.getBook(index);
+        return library.getBookAt(index);
     }
 
     private static String insertString(String contents, String bookContent, int index) {

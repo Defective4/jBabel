@@ -104,40 +104,12 @@ public class BabelLibrary {
         return chars.length;
     }
 
-    public Book getBook(BigInteger bookIndex) {
+    public Book getBookAt(BigInteger bookIndex) {
         BigInteger val = bookIndex.multiply(coprime).mod(max);
         while (val.toString(getBase()).length() < getCharactersPerBook()) {
             val = val.multiply(BigInteger.valueOf(10));
         }
         return new Book(this, val);
-    }
-
-    public Book getBook(BigInteger room, int wall, int shelf, int book) {
-        return this.getBook(this.getBookIndex(room, wall, shelf, book));
-    }
-
-    public Book getBook(BookLocation location) {
-        return this.getBook(this.getBookIndex(location));
-    }
-
-    public BigInteger getBookIndex(BigInteger room, int wall, int shelf, int book) {
-        if (wall < 0 || wall >= wallsPerRoom)
-            throw new IllegalArgumentException("wall index is not within range of 0-%s".formatted(wallsPerRoom - 1));
-        if (shelf < 0 || shelf >= shelvesPerWall)
-            throw new IllegalArgumentException("shelf index is not within range of 0-%s".formatted(shelvesPerWall - 1));
-        if (book < 0 || book >= booksPerShelf)
-            throw new IllegalArgumentException("book index is not within range of 0-%s".formatted(booksPerShelf - 1));
-
-        BigInteger index = room.multiply(BigInteger.valueOf(wallsPerRoom)).multiply(BigInteger.valueOf(shelvesPerWall))
-                .multiply(BigInteger.valueOf(booksPerShelf));
-        index = index.add(BigInteger.valueOf(wall * shelvesPerWall * booksPerShelf));
-        index = index.add(BigInteger.valueOf(shelf * booksPerShelf));
-        index = index.add(BigInteger.valueOf(book));
-        return index;
-    }
-
-    public BigInteger getBookIndex(BookLocation location) {
-        return this.getBookIndex(location.room(), location.wall(), location.shelf(), location.book());
     }
 
     public int getBooksPerShelf() {
