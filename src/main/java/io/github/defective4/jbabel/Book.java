@@ -6,22 +6,22 @@ public record Book(BabelLibrary library, BigInteger value) {
 
     @Override
     public String toString() {
-        return "Book [value=" + this.value.toString(this.library.getBase()) + "]";
+        return "Book [value=" + value.toString(library.getBase()) + "]";
     }
 
     public String toBaseString() {
-        return this.value.toString(this.library.getChars().length);
+        return value.toString(library.getChars().length);
     }
 
     public BigInteger calculateBookIndex() {
-        return this.value.multiply(this.library.getInverseMod()).mod(this.library.getMax());
+        return value.multiply(library.getInverseMod()).mod(library.getMax());
     }
 
     public BookLocation getBookLocation() {
-        BigInteger index = this.calculateBookIndex();
-        int wallsPerRoom = this.library.getWallsPerRoom();
-        int shelvesPerWall = this.library.getShelvesPerWall();
-        int booksPerShelf = this.library.getBooksPerShelf();
+        BigInteger index = calculateBookIndex();
+        int wallsPerRoom = library.getWallsPerRoom();
+        int shelvesPerWall = library.getShelvesPerWall();
+        int booksPerShelf = library.getBooksPerShelf();
         BigInteger[] divRem = index
                 .divideAndRemainder(BigInteger.valueOf(wallsPerRoom * shelvesPerWall * booksPerShelf));
         BigInteger room = divRem[0];
@@ -39,15 +39,15 @@ public record Book(BabelLibrary library, BigInteger value) {
     }
 
     public String getPage(int pageIndex) {
-        int start = this.library.getCharactersPerPage() * pageIndex;
-        int end = start + this.library.getCharactersPerPage();
-        return this.getContent().substring(start, end);
+        int start = library.getCharactersPerPage() * pageIndex;
+        int end = start + library.getCharactersPerPage();
+        return getContent().substring(start, end);
     }
 
     public String getContent() {
-        String base = this.toBaseString();
+        String base = toBaseString();
         StringBuilder contentBuilder = new StringBuilder(base.length());
-        char[] chars = this.library.getChars();
+        char[] chars = library.getChars();
         int radix = chars.length;
         for (char c : base.toCharArray()) {
             int i = Integer.parseInt(Character.toString(c), radix);

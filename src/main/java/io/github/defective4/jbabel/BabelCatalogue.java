@@ -16,8 +16,7 @@ public class BabelCatalogue {
         }
 
         public BabelCatalogue create() {
-            return new BabelCatalogue(this.library, this.random == null ? new Random() : this.random,
-                    this.randomBookBits);
+            return new BabelCatalogue(library, random == null ? new Random() : random, randomBookBits);
         }
 
         public Builder withRandom(Random random) {
@@ -44,19 +43,19 @@ public class BabelCatalogue {
     }
 
     public Book findBook(String contents) {
-        return this.library.findBook(contents);
+        return library.findBook(contents);
     }
 
     public Book findBookLooping(List<String> words, String separator) {
         String sep = separator == null ? "" : separator;
-        int cpb = this.library.getCharactersPerBook();
+        int cpb = library.getCharactersPerBook();
         StringBuilder builder = new StringBuilder(cpb);
         String lastWord = null;
         while (builder.length() <= cpb) {
             if (!builder.isEmpty()) {
                 builder.append(sep);
             }
-            lastWord = words.get(this.random.nextInt(words.size()));
+            lastWord = words.get(random.nextInt(words.size()));
             builder.append(lastWord);
         }
         String str;
@@ -66,22 +65,22 @@ public class BabelCatalogue {
         } else {
             str = builder.toString();
         }
-        return new Book(this.library, this.library.constructContentsValue(str));
+        return new Book(library, library.constructContentsValue(str));
     }
 
     public Book findBookPartial(String contents) {
-        Book book = this.getRandomBook();
+        Book book = getRandomBook();
         String bookContent = book.getContent();
-        int index = this.random.nextInt(bookContent.length() - contents.length() + 1);
+        int index = random.nextInt(bookContent.length() - contents.length() + 1);
         bookContent = insertString(contents, bookContent, index);
 
-        Book newBook = new Book(this.library, this.library.constructContentsValue(bookContent));
+        Book newBook = new Book(library, library.constructContentsValue(bookContent));
         return newBook;
     }
 
     public Book getRandomBook() {
-        BigInteger index = new BigInteger(this.randomBookBits, this.random);
-        return this.library.getBook(index);
+        BigInteger index = new BigInteger(randomBookBits, random);
+        return library.getBook(index);
     }
 
     private static String insertString(String contents, String bookContent, int index) {

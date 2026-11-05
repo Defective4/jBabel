@@ -16,7 +16,7 @@ public class BabelLibrary {
         private int wallsPerRoom = 4;
 
         public Builder(BigInteger max, BigInteger coprime, BigInteger inverseMod, char[] charset) {
-            this.chars = Objects.requireNonNull(charset);
+            chars = Objects.requireNonNull(charset);
             this.max = Objects.requireNonNull(max);
             this.coprime = Objects.requireNonNull(coprime);
             this.inverseMod = Objects.requireNonNull(inverseMod);
@@ -25,16 +25,16 @@ public class BabelLibrary {
         public Builder(char[] charset, Random rand, int pagesPerBook, int charactersPerPage) {
             Objects.requireNonNull(charset);
             Objects.requireNonNull(rand);
-            this.max = BigIntegerMath.generateLargestBase(charset.length, pagesPerBook * charactersPerPage);
-            this.coprime = BigIntegerMath.generateRandomCoprime(charset.length, this.max, rand);
-            this.inverseMod = BigIntegerMath.modularInverse(this.coprime, this.max);
-            this.chars = charset;
+            max = BigIntegerMath.generateLargestBase(charset.length, pagesPerBook * charactersPerPage);
+            coprime = BigIntegerMath.generateRandomCoprime(charset.length, max, rand);
+            inverseMod = BigIntegerMath.modularInverse(coprime, max);
+            chars = charset;
             this.pagesPerBook = pagesPerBook;
         }
 
         public BabelLibrary create() {
-            return new BabelLibrary(this.max, this.coprime, this.inverseMod, this.chars, this.wallsPerRoom,
-                    this.shelvesPerWall, this.booksPerShelf, this.pagesPerBook);
+            return new BabelLibrary(max, coprime, inverseMod, chars, wallsPerRoom, shelvesPerWall, booksPerShelf,
+                    pagesPerBook);
         }
 
         public Builder withBooksPerShelf(int booksPerShelf) {
@@ -69,7 +69,7 @@ public class BabelLibrary {
             int shelvesPerWall, int booksPerShelf, int pagesPerBook) {
         int len = Objects.requireNonNull(max).toString(Objects.requireNonNull(chars).length).length();
         if (len % pagesPerBook != 0) throw new IllegalArgumentException("bookCharacters % pagesPerBook != 0");
-        this.charactersPerPage = len / pagesPerBook;
+        charactersPerPage = len / pagesPerBook;
         this.max = max;
         this.coprime = Objects.requireNonNull(coprime);
         this.inverseMod = Objects.requireNonNull(inverseMod);
@@ -81,31 +81,31 @@ public class BabelLibrary {
     }
 
     public BigInteger constructContentsValue(String contents) {
-        int len = this.max.toString(this.getBase()).length();
+        int len = max.toString(getBase()).length();
         if (contents.length() > len) throw new IllegalArgumentException("Contents length can't be more than book size");
         StringBuilder rawValueBuilder = new StringBuilder(len);
         for (char c : contents.toLowerCase().toCharArray()) {
-            int index = this.getCharacterIndex(c);
-            rawValueBuilder.append(Integer.toString(index, this.chars.length));
+            int index = getCharacterIndex(c);
+            rawValueBuilder.append(Integer.toString(index, chars.length));
         }
         if (rawValueBuilder.length() < rawValueBuilder.capacity()) {
             rawValueBuilder.append("0".repeat(rawValueBuilder.capacity() - rawValueBuilder.length()));
         }
-        BigInteger value = new BigInteger(rawValueBuilder.toString(), this.chars.length);
+        BigInteger value = new BigInteger(rawValueBuilder.toString(), chars.length);
         return value;
     }
 
     public Book findBook(String contents) {
-        BigInteger value = this.constructContentsValue(contents);
+        BigInteger value = constructContentsValue(contents);
         return new Book(this, value);
     }
 
     public int getBase() {
-        return this.chars.length;
+        return chars.length;
     }
 
     public Book getBook(BigInteger bookIndex) {
-        return new Book(this, bookIndex.multiply(this.coprime).mod(this.max));
+        return new Book(this, bookIndex.multiply(coprime).mod(max));
     }
 
     public Book getBook(BigInteger room, int wall, int shelf, int book) {
@@ -117,17 +117,17 @@ public class BabelLibrary {
     }
 
     public BigInteger getBookIndex(BigInteger room, int wall, int shelf, int book) {
-        if (wall < 0 || wall >= this.wallsPerRoom) throw new IllegalArgumentException(
-                "wall index is not within range of 0-%s".formatted(this.wallsPerRoom - 1));
-        if (shelf < 0 || shelf >= this.shelvesPerWall) throw new IllegalArgumentException(
-                "shelf index is not within range of 0-%s".formatted(this.shelvesPerWall - 1));
-        if (book < 0 || book >= this.booksPerShelf) throw new IllegalArgumentException(
-                "book index is not within range of 0-%s".formatted(this.booksPerShelf - 1));
+        if (wall < 0 || wall >= wallsPerRoom)
+            throw new IllegalArgumentException("wall index is not within range of 0-%s".formatted(wallsPerRoom - 1));
+        if (shelf < 0 || shelf >= shelvesPerWall)
+            throw new IllegalArgumentException("shelf index is not within range of 0-%s".formatted(shelvesPerWall - 1));
+        if (book < 0 || book >= booksPerShelf)
+            throw new IllegalArgumentException("book index is not within range of 0-%s".formatted(booksPerShelf - 1));
 
-        BigInteger index = room.multiply(BigInteger.valueOf(this.wallsPerRoom))
-                .multiply(BigInteger.valueOf(this.shelvesPerWall)).multiply(BigInteger.valueOf(this.booksPerShelf));
-        index = index.add(BigInteger.valueOf(wall * this.shelvesPerWall * this.booksPerShelf));
-        index = index.add(BigInteger.valueOf(shelf * this.booksPerShelf));
+        BigInteger index = room.multiply(BigInteger.valueOf(wallsPerRoom)).multiply(BigInteger.valueOf(shelvesPerWall))
+                .multiply(BigInteger.valueOf(booksPerShelf));
+        index = index.add(BigInteger.valueOf(wall * shelvesPerWall * booksPerShelf));
+        index = index.add(BigInteger.valueOf(shelf * booksPerShelf));
         index = index.add(BigInteger.valueOf(book));
         return index;
     }
@@ -137,13 +137,13 @@ public class BabelLibrary {
     }
 
     public int getBooksPerShelf() {
-        return this.booksPerShelf;
+        return booksPerShelf;
     }
 
     public int getCharacterIndex(char c) {
         int index = -1;
-        for (int i = 0; i < this.chars.length; i++)
-            if (this.chars[i] == c) {
+        for (int i = 0; i < chars.length; i++)
+            if (chars[i] == c) {
                 index = i;
                 break;
             }
@@ -152,38 +152,38 @@ public class BabelLibrary {
     }
 
     public int getCharactersPerBook() {
-        return this.charactersPerPage * this.pagesPerBook;
+        return charactersPerPage * pagesPerBook;
     }
 
     public int getCharactersPerPage() {
-        return this.charactersPerPage;
+        return charactersPerPage;
     }
 
     public char[] getChars() {
-        return this.chars;
+        return chars;
     }
 
     public BigInteger getCoprime() {
-        return this.coprime;
+        return coprime;
     }
 
     public BigInteger getInverseMod() {
-        return this.inverseMod;
+        return inverseMod;
     }
 
     public BigInteger getMax() {
-        return this.max;
+        return max;
     }
 
     public int getPagesPerBook() {
-        return this.pagesPerBook;
+        return pagesPerBook;
     }
 
     public int getShelvesPerWall() {
-        return this.shelvesPerWall;
+        return shelvesPerWall;
     }
 
     public int getWallsPerRoom() {
-        return this.wallsPerRoom;
+        return wallsPerRoom;
     }
 }

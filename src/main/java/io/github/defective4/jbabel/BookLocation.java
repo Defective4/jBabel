@@ -8,13 +8,12 @@ public record BookLocation(BigInteger room, int wall, int shelf, int book) {
     }
 
     public String base32Room() {
-        return this.room.toString(32);
+        return room.toString(32);
     }
 
     @Override
     public String toString() {
-        return "BookLocation [room=" + this.base32Room() + ", wall=" + this.wall + ", shelf=" + this.shelf + ", book="
-                + this.book + "]";
+        return "BookLocation [room=" + base32Room() + ", wall=" + wall + ", shelf=" + shelf + ", book=" + book + "]";
     }
 
 }
