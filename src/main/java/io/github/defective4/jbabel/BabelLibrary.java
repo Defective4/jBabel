@@ -151,6 +151,10 @@ public class BabelLibrary {
         return index;
     }
 
+    public int getCharactersPerBook() {
+        return this.charactersPerPage * this.pagesPerBook;
+    }
+
     public int getCharactersPerPage() {
         return this.charactersPerPage;
     }

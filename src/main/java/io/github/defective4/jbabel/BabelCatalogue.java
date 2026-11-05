@@ -1,6 +1,7 @@
 package io.github.defective4.jbabel;
 
 import java.math.BigInteger;
+import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
@@ -46,11 +47,33 @@ public class BabelCatalogue {
         return this.library.findBook(contents);
     }
 
+    public Book findBookLooping(List<String> words, String separator) {
+        String sep = separator == null ? "" : separator;
+        int cpb = this.library.getCharactersPerBook();
+        StringBuilder builder = new StringBuilder(cpb);
+        String lastWord = null;
+        while (builder.length() <= cpb) {
+            if (!builder.isEmpty()) {
+                builder.append(sep);
+            }
+            lastWord = words.get(this.random.nextInt(words.size()));
+            builder.append(lastWord);
+        }
+        String str;
+        if (lastWord != null) {
+            str = builder.toString();
+            str = str.substring(0, str.length() - lastWord.length() - 1);
+        } else {
+            str = builder.toString();
+        }
+        return new Book(this.library, this.library.constructContentsValue(str));
+    }
+
     public Book findBookPartial(String contents) {
         Book book = this.getRandomBook();
         String bookContent = book.getContent();
         int index = this.random.nextInt(bookContent.length() - contents.length() + 1);
-        bookContent = bookContent.substring(0, index) + contents + bookContent.substring(index + contents.length());
+        bookContent = insertString(contents, bookContent, index);
 
         Book newBook = new Book(this.library, this.library.constructContentsValue(bookContent));
         return newBook;
@@ -59,5 +82,10 @@ public class BabelCatalogue {
     public Book getRandomBook() {
         BigInteger index = new BigInteger(this.randomBookBits, this.random);
         return this.library.getBook(index);
+    }
+
+    private static String insertString(String contents, String bookContent, int index) {
+        bookContent = bookContent.substring(0, index) + contents + bookContent.substring(index + contents.length());
+        return bookContent;
     }
 }
