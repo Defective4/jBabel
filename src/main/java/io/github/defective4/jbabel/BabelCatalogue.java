@@ -68,6 +68,21 @@ public class BabelCatalogue {
         return new Book(library, library.constructContentsValue(str));
     }
 
+    public Book findBookPage(String contents) {
+        if (contents.length() > library.getCharactersPerPage())
+            throw new IllegalArgumentException("contents' size can't be bigger than page size");
+        Book book = getRandomBook();
+        String bookContent = book.getContent();
+
+        String pageContents = contents;
+        pageContents += " ".repeat(library.getCharactersPerPage() - contents.length());
+        bookContent = insertString(pageContents, bookContent,
+                random.nextInt(library.getPagesPerBook()) * library.getCharactersPerPage());
+
+        Book newBook = new Book(library, library.constructContentsValue(bookContent));
+        return newBook;
+    }
+
     public Book findBookPartial(String contents) {
         Book book = getRandomBook();
         String bookContent = book.getContent();

@@ -105,7 +105,11 @@ public class BabelLibrary {
     }
 
     public Book getBook(BigInteger bookIndex) {
-        return new Book(this, bookIndex.multiply(coprime).mod(max));
+        BigInteger val = bookIndex.multiply(coprime).mod(max);
+        while (val.toString(getBase()).length() < getCharactersPerBook()) {
+            val = val.multiply(BigInteger.valueOf(10));
+        }
+        return new Book(this, val);
     }
 
     public Book getBook(BigInteger room, int wall, int shelf, int book) {
