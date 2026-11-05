@@ -27,7 +27,7 @@ public class BabelLibrary {
             Objects.requireNonNull(rand);
             max = BigIntegerMath.generateLargestBase(charset.length, pagesPerBook * charactersPerPage);
             coprime = BigIntegerMath.generateRandomCoprime(charset.length, max, rand);
-            inverseMod = BigIntegerMath.modularInverse(coprime, max);
+            inverseMod = coprime.modInverse(max);
             chars = charset;
             this.pagesPerBook = pagesPerBook;
         }

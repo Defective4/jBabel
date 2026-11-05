@@ -24,35 +24,4 @@ public class BigIntegerMath {
         } while (!c.gcd(max).equals(BigInteger.ONE));
         return c;
     }
-
-    public static BigInteger modularInverse(BigInteger n, BigInteger m) {
-        if (!n.gcd(m).equals(BigInteger.ONE)) return BigInteger.valueOf(-1);
-
-        BigInteger m0 = m;
-        BigInteger y = BigInteger.ZERO, x = BigInteger.ONE;
-
-        if (m.equals(BigInteger.ONE)) return BigInteger.ZERO;
-
-        while (n.compareTo(BigInteger.ONE) > 0) {
-            BigInteger q = n.divide(m);
-
-            BigInteger t = m;
-
-            m = n.mod(m);
-            n = t;
-            t = y;
-
-            BigInteger mult = q.multiply(y);
-            y = x.subtract(mult);
-            x = t;
-        }
-
-        // Make x positive
-        if (x.compareTo(BigInteger.ZERO) < 0) {
-            x = x.add(m0);
-        }
-
-        return x;
-    }
-
 }
