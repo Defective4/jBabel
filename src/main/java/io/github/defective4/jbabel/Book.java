@@ -2,6 +2,19 @@ package io.github.defective4.jbabel;
 
 import java.math.BigInteger;
 
+/**
+ * Represents a book with contents encoded as an integer value.
+ * <p>
+ * This class contains methods to calculate book index, location within the
+ * library it's bound to, as well as decoding and encoding its contents to
+ * human-readable strings.
+ * </p>
+ *
+ * @param library library instance this book is bound to
+ * @param value
+ *
+ *
+ */
 public record Book(BabelLibrary library, BigInteger value) {
 
     @Override
@@ -9,14 +22,30 @@ public record Book(BabelLibrary library, BigInteger value) {
         return "Book [value=" + value.toString(library.getBase()) + "]";
     }
 
+    /**
+     * Converts book value to a string with the library's numeric radix.
+     *
+     * @return a string encoded in the base of {@link BabelLibrary#getBase()}
+     */
     public String toBaseString() {
-        return value.toString(library.getChars().length);
+        return value.toString(library.getBase());
     }
 
+    /**
+     * Calculates this book's numeric index within the bound library.
+     *
+     * @return book index as a big integer
+     */
     public BigInteger calculateBookIndex() {
         return value.multiply(library.getInverseMod()).mod(library.getMax());
     }
 
+    /**
+     * Calculates this book's index, and returns a physical book location within the
+     * bound library.
+     *
+     * @return this book's location
+     */
     public BookLocation getBookLocation() {
         BigInteger index = calculateBookIndex();
         int wallsPerRoom = library.getWallsPerRoom();
@@ -38,12 +67,26 @@ public record Book(BabelLibrary library, BigInteger value) {
         return new int[] { value / div, value % div };
     }
 
+    /**
+     * Get decoded book contents on a given page.
+     *
+     * @param pageIndex
+     * @return decoded page contents.
+     */
     public String getPage(int pageIndex) {
         int start = library.getCharactersPerPage() * pageIndex;
         int end = start + library.getCharactersPerPage();
         return getContent().substring(start, end);
     }
 
+    /**
+     * Decodes and returns the string content of this book. Converts each digit of
+     * {@link #toBaseString()} into an index, retrieves the corresponding character
+     * from a charset set defined in book's library, and constructs the
+     * human-readable string.
+     *
+     * @return book contents
+     */
     public String getContent() {
         String base = toBaseString();
         StringBuilder contentBuilder = new StringBuilder(base.length());
