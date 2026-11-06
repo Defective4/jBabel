@@ -70,7 +70,7 @@ public class BabelLibrary {
         }
 
         /**
-         * Creates an instance of {@link BabelLibrary}
+         * Creates an instance of {@link BabelLibrary}.
          *
          * @return new library instance
          */
@@ -95,7 +95,7 @@ public class BabelLibrary {
         }
 
         /**
-         * Configures the number of books per shelf
+         * Configures the number of books per shelf.
          *
          * @param booksPerShelf The integer representing the number of books that will
          *                      be present on each shelf.
