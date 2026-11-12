@@ -138,6 +138,15 @@ public class BabelCatalogue {
     }
 
     /**
+     * Get the Random instance used by this catalogue.
+     * 
+     * @return random instance
+     */
+    public Random getRandom() {
+        return random;
+    }
+
+    /**
      * Finds and returns a modified copy of a random book containing the specified
      * contents, among other random characters.
      *
